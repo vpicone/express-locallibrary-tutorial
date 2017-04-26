@@ -133,10 +133,52 @@ exports.author_delete_post = function(req, res, next) {
 
 // Display Author update form on GET
 exports.author_update_get = function(req, res, next) {
-    res.send('NOT IMPLEMENTED: Author update GET');
+    req.sanitize('id').escape();
+    req.sanitize('id').trim();
+    //get author first and last name and years of birth/death
+    Author.findById(req.params.id).exec(function (err, thisAuthor) {
+      if (err) {return next(err);}
+      //Success
+      res.render('author_form', {title: 'Update Author', author: thisAuthor})
+    });
 };
 
 // Handle Author update on POST
 exports.author_update_post = function(req, res, next) {
-    res.send('NOT IMPLEMENTED: Author update POST');
+    //sanitize id passed in
+    req.sanitize('id').escape();
+    req.sanitize('id').trim();
+
+    //check other Data
+    req.checkBody('first_name', 'First name can not be empty.').notEmpty();
+    req.checkBody('family_name', 'Family name can not be empty.').notEmpty();
+    //req.checkBody('date_of_birth', 'Birth date can not be empty.').notEmpty();
+    //req.checkBody('date_of_death', 'Death Date can not be empty.').notEmpty();
+
+    var author = new Author({
+        first_name: req.body.first_name,
+        family_name: req.body.family_name,
+        date_of_birth: req.body.date_of_birth,
+        date_of_death: req.body.date_of_death,
+        _id:req.params.id //required so no new id
+    });
+
+    console.log('AUTHOR: ' + author);
+
+    var errors = req.validationErrors();
+    if(errors){
+      Author.findById(req.params.id).exec(function (err, thisAuthor) {
+        if (err) {return next(err);}
+        //Success
+        res.render('author_form', {title: 'Update Author', author: thisAuthor})
+      });
+    }
+    else {
+      Author.findByIdAndUpdate(req.params.id, author, {}, function(err, updatedAuthor) {
+        if (err) {return next(err);}
+        //successful update
+        res.redirect(updatedAuthor.url);
+      });
+    }
+
 };
