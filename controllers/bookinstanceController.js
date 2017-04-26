@@ -97,7 +97,6 @@ exports.bookinstance_delete_get = function(req, res, next) {
 // Handle BookInstance delete on POST
 exports.bookinstance_delete_post = function(req, res, next) {
     req.checkBody('bookinstanceid', 'Instance ID must exist.').notEmpty();
-    console.log(req.body.bookinstanceid);
     BookInstance.findByIdAndRemove(req.body.bookinstanceid, function deleteBookInstance(err) {
         if(err) {return next(err); }
         //Success

@@ -37,5 +37,17 @@ AuthorSchema
   return lifespan;
 });
 
+AuthorSchema
+.virtual('date_of_birth_form_entry_format')
+.get(function() {
+  return moment(this.date_of_birth).format('YYYY-MM-DD');
+});
+
+AuthorSchema
+.virtual('date_of_death_form_entry_format')
+.get(function() {
+  return moment(this.date_of_death).format('YYYY-MM-DD');
+});
+
 //Export model
 module.exports = mongoose.model('Author', AuthorSchema);
