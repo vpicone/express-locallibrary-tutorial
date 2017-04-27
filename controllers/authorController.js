@@ -1,6 +1,7 @@
 var Author = require('../models/author');
 var async = require('async');
 var Book = require('../models/book');
+var debug = require('debug')('author');
 
 //display list of all authors
 exports.author_list = function(req, res, next) {
@@ -163,7 +164,7 @@ exports.author_update_post = function(req, res, next) {
         _id:req.params.id //required so no new id
     });
 
-    console.log('AUTHOR: ' + author);
+    debug('AUTHOR: ' + author);
 
     var errors = req.validationErrors();
     if(errors){
