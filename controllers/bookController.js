@@ -2,6 +2,7 @@ var Book = require('../models/book');
 var Author = require('../models/author');
 var Genre = require('../models/genre');
 var BookInstance = require('../models/bookinstance');
+var debug = require('debug')('book');
 
 var async = require('async');
 
@@ -108,8 +109,7 @@ exports.book_create_post = function(req, res, next) {
         isbn: req.body.isbn,
         genre: (typeof req.body.genre==='undefined') ? [] : req.body.genre.split(",")
     });
-
-    console.log('BOOK: ' + book);
+    debug('New Book: ' + book);
 
     var errors = req.validationErrors();
     if (errors) {
@@ -153,7 +153,7 @@ exports.book_create_post = function(req, res, next) {
 
 // Display book delete form on GET
 exports.book_delete_get = function(req, res, next) {
-    async.parallel({ 
+    async.parallel({
         book: function(callback) {
             Book.findById(req.params.id).exec(callback);
         },
@@ -170,10 +170,10 @@ exports.book_delete_get = function(req, res, next) {
 
 // Handle book delete on POST
 exports.book_delete_post = function(req, res, next) {
-    
+
     req.checkBody('bookid', 'Book id must exist').notEmpty();
-    
-    async.parallel({ 
+
+    async.parallel({
         book: function(callback) {
             Book.findById(req.params.id).exec(callback);
         },
@@ -197,7 +197,7 @@ exports.book_delete_post = function(req, res, next) {
             }
     });
 
-                
+
 };
 
 // Display book update form on GET

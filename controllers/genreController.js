@@ -1,6 +1,7 @@
 var Genre = require('../models/genre');
 var Book = require('../models/book');
 var async = require('async');
+var debug = require('debug')('genre');
 
 
 // Display list of all Genre
@@ -69,7 +70,7 @@ exports.genre_create_post = function(req, res, next) {
       // Check if Genre with same name exists
       Genre.findOne({'name': req.body.name})
         .exec( function(err, found_genre) {
-          console.log('found_genre: ' + found_genre);
+          debug('found_genre: ' + found_genre);
           if (err) {return next(err);}
 
           if(found_genre) {
@@ -92,7 +93,7 @@ exports.genre_create_post = function(req, res, next) {
 
 // Display Genre delete form on GET
 exports.genre_delete_get = function(req, res, next) {
-  
+
   async.parallel({
     genre: function(callback) {
       Genre.findById(req.params.id).exec(callback);
@@ -105,15 +106,15 @@ exports.genre_delete_get = function(req, res, next) {
       //Success!
       res.render('genre_delete', {title: 'Delete Genre', genre: results.genre, genre_books: results.genre_books});
   });
-    
+
 };
-    
+
 
 // Handle Genre delete on POST
 exports.genre_delete_post = function(req, res, next) {
-  
+
     req.checkBody('genreid', 'Genre id must exist.').notEmpty();
-    
+
     async.parallel({
       genre: function(callback) {
         Genre.findById(req.body.genreid).exec(callback);
@@ -135,18 +136,18 @@ exports.genre_delete_post = function(req, res, next) {
             //Success
             res.redirect('/catalog/genres');
           });
-          
+
         }
     });
 
-};    
-    
+};
+
 
 // Display Genre update form on GET
 exports.genre_update_get = function(req, res, next) {
     req.sanitize('id').escape();
     req.sanitize('id').trim();
-  
+
     Genre.findById(req.params.id).exec(function(err, thisGenre) {
       if(err) {return next(err);}
       //success
@@ -159,16 +160,16 @@ exports.genre_update_get = function(req, res, next) {
 exports.genre_update_post = function(req, res, next) {
     req.sanitize('id').escape();
     req.sanitize('id').trim();
-    
+
     req.checkBody('name', 'Name field cannot be empty.').notEmpty();
     req.sanitize('name').escape();
     req.sanitize('name').trim();
-    
+
     var genre = new Genre({
       name: req.body.name,
       _id: req.params.id
     });
-    
+
     var errors = req.validationErrors();
   if(errors) {
       Genre.findById(req.params.id).exec(function(err, thisGenre) {

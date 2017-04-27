@@ -120,7 +120,6 @@ exports.bookinstance_update_get = function(req, res, next) {
     }, function (err, results) {
       if (err) {return next(err);}
       // Success
-      console.log(results.books);
       res.render('bookinstance_form', {title: 'Update Book Instance', bookinstance: results.bookinstance, book_list: results.books});
     });
 };
@@ -155,7 +154,6 @@ exports.bookinstance_update_post = function(req, res, next) {
       }, function (err, results) {
         if (err) {return next(err);}
         // Success
-        console.log(results.books);
         res.render('bookinstance_form', {title: 'Update Book Instance', bookinstance: results.bookinstance, book_list: results.books});
       });
     }

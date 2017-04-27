@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var expressValidator = require('express-validator');
+var compression = require('compression');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -12,7 +13,7 @@ var catalog = require('./routes/catalog');  //Import routes for "catalog" area o
 
 var app = express();
 var mongoose = require('mongoose');
-var mongoDB = 'mongodb://vpicone:lwinterfresh2@ds061506.mlab.com:61506/local_library'
+var mongoDB = process.env.MONGODB_URI || 'mongodb://vpicone:lwinterfresh2@ds061506.mlab.com:61506/local_library';
 mongoose.connect(mongoDB);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error'));
@@ -20,6 +21,11 @@ db.on('error', console.error.bind(console, 'MongoDB connection error'));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+
+app.use(helmet());
+//compresses HTML requests
+app.use(compression());
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
